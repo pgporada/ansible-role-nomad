@@ -1,0 +1,30 @@
+# <% load "#{File.dirname(__FILE__)}/test/kitchen_docker.rb" %>
+
+---
+driver:
+  name: docker
+  use_sudo: false
+
+provisioner:
+  hosts: test-kitchen
+  name: ansible_playbook
+  require_ansible_repo: false
+  require_ansible_omnibus: true
+  ansible_verbosity: 2
+  ansible_verbose: true
+  ansible_diff: true
+  require_chef_for_busser: true
+  update_package_repos: false
+
+platforms:
+  - name: centos-7
+    driver_config:
+      privileged: true # Needed by systemd to access cgroups
+      dockerfile: test/Dockerfile-centos7
+      run_command: /usr/sbin/init # Start systemd as root process
+      memory: 1024m
+      volume:
+        - /sys/fs/cgroup:/sys/fs/cgroup:ro
+
+suites:
+  - name: default

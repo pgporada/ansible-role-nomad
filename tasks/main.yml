@@ -1,0 +1,53 @@
+---
+- name: Install needed helper package(s)
+  become: true
+  become_method: sudo
+  package:
+    name: unzip
+    state: present
+
+- name: Check for previously installed nomad
+  shell: "nomad version | awk '{print $2}' | awk -F'-' '{print $1}' | sed 's/v//'"
+  changed_when: False
+  failed_when: False
+  register: prior_nomad_version
+
+- name: Output previously installed nomad
+  debug:
+    var: prior_nomad_version.stdout
+
+- name: Create Nomad group
+  group:
+    name: "{{ nomad_group }}"
+    system: yes
+    state: present
+
+- name: Create Nomad user
+  user:
+    name: "{{ nomad_user }}"
+    shell: /bin/false
+    createhome: no
+    group: "{{ nomad_group }}"
+    system: yes
+    state: present
+
+- name: Download x86_64 Nomad
+  get_url:
+    url: "https://releases.hashicorp.com/nomad/{{ nomad_version }}/nomad_{{ nomad_version }}_linux_amd64.zip"
+    dest: "/tmp/nomad_{{ nomad_version }}_linux_amd64.zip"
+    owner: "{{ nomad_user }}"
+    group: "{{ nomad_group }}"
+    mode: 0444
+    checksum: "sha256:{{ nomad_sha256sum }}"
+  when: prior_nomad_version.stdout != nomad_version
+
+- name: Install Nomad from the zip
+  unarchive:
+    src:
+    dest: "{{ nomad_install_location }}"
+    mode: 0664
+    owner: "{{ nomad_user }}"
+    group: "{{ nomad_group }}"
+  when: prior_nomad_version.stdout != nomad_version
+
+- meta: flush_handlers

@@ -1,0 +1,8 @@
+---
+- name: Enable nomad
+  service: nomad
+  enabled: yes
+
+- name: Restart nomad
+  service: nomad
+  state: restarted

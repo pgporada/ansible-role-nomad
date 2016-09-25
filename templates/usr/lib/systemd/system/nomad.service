@@ -1,0 +1,15 @@
+[Unit]
+Description=Nomad Agent
+# http://unix.stackexchange.com/questions/126009/cause-a-script-to-execute-after-networking-has-started
+Wants=network-online.target
+After=network.target network-online.target
+
+[Service]
+Type=simple
+ExecStart={{ nomad_install_location }} agent -config /etc/nomad.d
+ExecReload=/bin/kill -HUP $MAINPID
+Restart=on-failure
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target
