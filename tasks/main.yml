@@ -43,11 +43,12 @@
 
 - name: Install Nomad from the zip
   unarchive:
-    src:
+    src: "/tmp/nomad_{{ nomad_version }}_linux_amd64.zip"
     dest: "{{ nomad_install_location }}"
-    mode: 0664
+    mode: 0775
     owner: "{{ nomad_user }}"
     group: "{{ nomad_group }}"
+    keep_newer: true
   when: prior_nomad_version.stdout != nomad_version
 
 - meta: flush_handlers

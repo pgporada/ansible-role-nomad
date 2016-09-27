@@ -28,3 +28,6 @@ platforms:
 
 suites:
   - name: default
+
+transport:
+  forward_agent: true

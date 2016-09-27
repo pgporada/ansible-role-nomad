@@ -5,9 +5,7 @@ module Kitchen
     class Docker < Kitchen::Driver::SSHBase
 
       def login_command(state)
-        LoginCommand.new(%W[
-		  docker exec -it #{state[:container_id]} bash
-        ])
+        LoginCommand.new(%W[docker exec -it #{state[:container_id]} bash])
       end
 
       def rm_container(state)

@@ -2,8 +2,7 @@
 nomad_version: 0.4.1
 nomad_sha256sum: 0cdb5dd95c918c6237dddeafe2e9d2049558fea79ed43eacdfcd247d5b093d67
 
-# This is the full path to the binary
-nomad_install_location: /bin/nomad
+nomad_install_location: /bin
 
 nomad_user: nomad
 nomad_group: nomad

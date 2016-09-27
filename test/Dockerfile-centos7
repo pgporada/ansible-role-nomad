@@ -40,7 +40,129 @@ RUN yum clean all && \
 # We do this in a separate RUN command since these packages are more
 # likely to change over time, and we want to reuse previous layers as
 # much as possible.
+#
+# This will create a fat image so that converge runs really only need to install Ansible
 RUN yum install -y epel-release
-RUN yum install -y python-pip python-devel libffi libffi-devel openssl-devel gcc make
-RUN yum -y install crontabs curl initscripts net-tools passwd sudo tar which wget && \
-(curl -L https://www.opscode.com/chef/install.sh | bash -s — -v 12.0.3)
+RUN yum install -y python-pip  \
+    python-devel \
+    libffi  \
+    libffi-devel  \
+    openssl-devel  \
+    gcc  \
+    make  \
+    PyYAML  \
+    git  \
+    python-httplib2  \
+    python-jinja2  \
+    python-keyczar  \
+    python2-paramiko  \
+    groff-base  \
+    less  \
+    libgnome-keyring  \
+    libtomcrypt  \
+    libtommath  \
+    libyaml  \
+    perl  \
+    perl-Carp  \
+    perl-Encode  \
+    perl-Error  \
+    perl-Exporter  \
+    perl-File-Path  \
+    perl-File-Temp  \
+    perl-Filter  \
+    perl-Getopt-Long  \
+    perl-Git  \
+    perl-HTTP-Tiny  \
+    perl-PathTools  \
+    perl-Pod-Escapes  \
+    perl-Pod-Perldoc  \
+    perl-Pod-Simple  \
+    perl-Pod-Usage  \
+    perl-Scalar-List-Utils  \
+    perl-Socket  \
+    perl-Storable  \
+    perl-TermReadKey  \
+    perl-Text-ParseWords  \
+    perl-Time-HiRes  \
+    perl-Time-Local  \
+    perl-constant  \
+    perl-libs  \
+    perl-macros  \
+    perl-parent  \
+    perl-podlators  \
+    perl-threads  \
+    perl-threads-shared  \
+    python-babel  \
+    python-markupsafe  \
+    python-pyasn1  \
+    python-six  \
+    python2-crypto  \
+    python2-ecdsa  \
+    rsync  \
+    git  \
+    python-httplib2  \
+    python-jinja2  \
+    python-keyczar  \
+    python2-paramiko  \
+    Installing  \
+    groff-base  \
+    less  \
+    libgnome-keyring  \
+    libtomcrypt  \
+    libtommath  \
+    libyaml  \
+    perl  \
+    perl-Carp  \
+    perl-Encode  \
+    perl-Error  \
+    perl-Exporter  \
+    perl-File-Path  \
+    perl-File-Temp  \
+    perl-Filter  \
+    perl-Getopt-Long  \
+    perl-Git  \
+    perl-HTTP-Tiny  \
+    perl-PathTools  \
+    perl-Pod-Escapes  \
+    perl-Pod-Perldoc  \
+    perl-Pod-Simple  \
+    perl-Pod-Usage  \
+    perl-Scalar-List-Utils  \
+    perl-Socket  \
+    perl-Storable  \
+    perl-TermReadKey  \
+    perl-Text-ParseWords  \
+    perl-Time-HiRes  \
+    perl-Time-Local  \
+    perl-constant  \
+    perl-libs  \
+    perl-macros  \
+    perl-parent  \
+    perl-podlators  \
+    perl-threads  \
+    perl-threads-shared  \
+    python-babel  \
+    python-markupsafe  \
+    python-pyasn1  \
+    python-six  \
+    python2-crypto  \
+    python2-ecdsa  \
+    rsync  \
+    sshpass  \
+    MySQL-python  \
+    python-devel  \
+    python  \
+    python-libs  \
+    crontabs  \
+    initscripts  \
+    net-tools  \
+    passwd  \
+    sudo \
+    tar \
+    which \
+    wget \
+    mercurial \
+    libselinux-python
+
+RUN yum groupinstall -y "Development tools"
+RUN (curl -L https://www.opscode.com/chef/install.sh | bash -s — -v 12.0.3)
