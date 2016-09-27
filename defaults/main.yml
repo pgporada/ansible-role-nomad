@@ -2,7 +2,11 @@
 nomad_version: 0.4.1
 nomad_sha256sum: 0cdb5dd95c918c6237dddeafe2e9d2049558fea79ed43eacdfcd247d5b093d67
 
-nomad_install_location: /bin
+nomad_install_dir: /bin
+nomad_data_dir: /etc/nomad.d
 
 nomad_user: nomad
 nomad_group: nomad
+
+nomad_gomaxprocs: 2
+nomad_options: ""

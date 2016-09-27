@@ -6,6 +6,7 @@ GEM
       thor (<= 0.19.0)
     busser-bats (0.3.0)
       busser
+    kitchen (0.0.3)
     kitchen-ansible (0.45.4)
       net-ssh (~> 3.0)
       test-kitchen (~> 1.4)
@@ -41,6 +42,7 @@ PLATFORMS
 
 DEPENDENCIES
   busser-bats
+  kitchen
   kitchen-ansible
   kitchen-docker
   kitchen-vagrant

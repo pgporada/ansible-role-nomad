@@ -1,5 +1,6 @@
 source "https://rubygems.org"
 
+gem "kitchen"
 gem "test-kitchen"
 gem "kitchen-vagrant"
 gem "kitchen-docker"

@@ -1,7 +1,6 @@
 ---
 - name: Install needed helper package(s)
   become: true
-  become_method: sudo
   package:
     name: unzip
     state: present
@@ -17,12 +16,14 @@
     var: prior_nomad_version.stdout
 
 - name: Create Nomad group
+  become: true
   group:
     name: "{{ nomad_group }}"
     system: yes
     state: present
 
 - name: Create Nomad user
+  become: true
   user:
     name: "{{ nomad_user }}"
     shell: /bin/false
@@ -30,6 +31,15 @@
     group: "{{ nomad_group }}"
     system: yes
     state: present
+
+- name: Create Nomad data directory
+  command: "mkdir -p {{ nomad_data_dir }}"
+
+- name: Chown data directory
+  command: "chown {{ nomad_user }}:{{ nomad_group }} {{ nomad_data_dir }}"
+
+- name: Chmod data directory
+  command: "chmod 0775 {{ nomad_data_dir }}"
 
 - name: Download x86_64 Nomad
   get_url:
@@ -44,11 +54,29 @@
 - name: Install Nomad from the zip
   unarchive:
     src: "/tmp/nomad_{{ nomad_version }}_linux_amd64.zip"
-    dest: "{{ nomad_install_location }}"
+    dest: "{{ nomad_install_dir }}"
     mode: 0775
     owner: "{{ nomad_user }}"
     group: "{{ nomad_group }}"
     keep_newer: true
   when: prior_nomad_version.stdout != nomad_version
+
+- name: Add sysconfig file
+  become: true
+  template:
+    src: etc/sysconfig/nomad.j2
+    dest: /etc/sysconfig/nomad
+    owner: "{{ nomad_user }}"
+    group: "{{ nomad_group }}"
+    mode: 0664
+
+- name: Add systemd service unit
+  become: true
+  template:
+    src: usr/lib/systemd/system/nomad.service.j2
+    dest: /usr/lib/systemd/system/nomad.service
+    owner: "{{ nomad_user }}"
+    group: "{{ nomad_group }}"
+    mode: 0664
 
 - meta: flush_handlers
