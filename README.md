@@ -46,7 +46,7 @@ To run the local playbook, issue the following command.
 License
 -------
 
-GPLv3
+Apache License, Version 2.0
 
 Author Information
 ------------------

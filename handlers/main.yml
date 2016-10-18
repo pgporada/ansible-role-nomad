@@ -1,10 +1,12 @@
 ---
 - name: Daemon reload
   become: true
+  become_method: sudo
   shell: systemctl daemon-reload
 
 - name: Restart nomad
   become: true
+  become_method: sudo
   service:
     name: nomad
     state: restarted
