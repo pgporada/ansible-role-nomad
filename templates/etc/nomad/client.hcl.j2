@@ -1,0 +1,20 @@
+log_level  = "{{ nomad_loglevel | upper }}"
+data_dir   = "{{ nomad_data_dir }}/"
+region     = "{{ nomad_region }}"
+datacenter = "{{ nomad_datacenter }}"
+name       = "{{ inventory_hostname_short }}"
+
+client {
+    enabled = {{ nomad_is_client | bool | lower }}
+}
+
+reserved {
+    cpu             = {{ nomad_client_cpu_reservation }}
+    memory          = {{ nomad_client_memory_reservation }}
+    disk            = {{ nomad_client_disk_reservation }}
+    reserved_ports  = "22,80,443,4646-4648,8500-8600"
+}
+
+ports {
+    http = {{ nomad_port_http }}
+}

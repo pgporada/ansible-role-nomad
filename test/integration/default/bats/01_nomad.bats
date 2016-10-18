@@ -15,3 +15,7 @@
     [ "$status" -ne 0 ]
 }
 
+@test "Nomad" {
+# TO-DO
+	skip
+}

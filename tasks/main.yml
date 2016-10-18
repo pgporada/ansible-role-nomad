@@ -1,82 +1,104 @@
 ---
 - name: Install needed helper package(s)
   become: true
+  become_method: sudo
   package:
     name: unzip
     state: present
+  tags:
+    - nomad
 
-- name: Check for previously installed nomad
+- name: Check for previously installed and executable nomad
   shell: "nomad version | awk '{print $2}' | awk -F'-' '{print $1}' | sed 's/v//'"
   changed_when: False
   failed_when: False
   register: prior_nomad_version
+  tags:
+    - nomad
 
-- name: Output previously installed nomad
+- name: Previous nomad version
   debug:
     var: prior_nomad_version.stdout
+  tags:
+    - nomad
 
-- name: Create Nomad group
+- name: Create Nomad directories
   become: true
-  group:
-    name: "{{ nomad_group }}"
-    system: yes
-    state: present
-
-- name: Create Nomad user
-  become: true
-  user:
-    name: "{{ nomad_user }}"
-    shell: /bin/false
-    createhome: no
-    group: "{{ nomad_group }}"
-    system: yes
-    state: present
-
-- name: Create Nomad data directory
-  command: "mkdir -p {{ nomad_data_dir }}"
-
-- name: Chown data directory
-  command: "chown {{ nomad_user }}:{{ nomad_group }} {{ nomad_data_dir }}"
-
-- name: Chmod data directory
-  command: "chmod 0775 {{ nomad_data_dir }}"
+  become_method: sudo
+  file:
+    path: "{{ item }}"
+    owner: root
+    group: root
+    mode: 0775
+    state: directory
+  with_items:
+    - "{{ nomad_data_dir }}"
+    - "{{ nomad_config_dir }}"
+  tags:
+    - nomad
 
 - name: Download x86_64 Nomad
   get_url:
     url: "https://releases.hashicorp.com/nomad/{{ nomad_version }}/nomad_{{ nomad_version }}_linux_amd64.zip"
     dest: "/tmp/nomad_{{ nomad_version }}_linux_amd64.zip"
-    owner: "{{ nomad_user }}"
-    group: "{{ nomad_group }}"
+    owner: root
+    group: root
     mode: 0444
     checksum: "sha256:{{ nomad_sha256sum }}"
   when: prior_nomad_version.stdout != nomad_version
+  tags:
+    - nomad
 
 - name: Install Nomad from the zip
+  become: true
+  become_method: sudo
   unarchive:
     src: "/tmp/nomad_{{ nomad_version }}_linux_amd64.zip"
     dest: "{{ nomad_install_dir }}"
     mode: 0775
-    owner: "{{ nomad_user }}"
-    group: "{{ nomad_group }}"
+    owner: root
+    group: root
     keep_newer: true
   when: prior_nomad_version.stdout != nomad_version
+  notify:
+    - Restart nomad
+  tags:
+    - nomad
 
 - name: Add sysconfig file
   become: true
+  become_method: sudo
   template:
     src: etc/sysconfig/nomad.j2
     dest: /etc/sysconfig/nomad
-    owner: "{{ nomad_user }}"
-    group: "{{ nomad_group }}"
+    owner: root
+    group: root
     mode: 0664
+  notify:
+    - Restart nomad
+  tags:
+    - nomad
 
 - name: Add systemd service unit
   become: true
+  become_method: sudo
   template:
     src: usr/lib/systemd/system/nomad.service.j2
     dest: /usr/lib/systemd/system/nomad.service
-    owner: "{{ nomad_user }}"
-    group: "{{ nomad_group }}"
+    owner: root
+    group: root
     mode: 0664
+  notify:
+    - Daemon reload
+  tags:
+    - nomad
+
+- name: Start nomad
+  service:
+    name: nomad
+    state: started
+    enabled: yes
+  tags:
+    - nomad
 
 - meta: flush_handlers
