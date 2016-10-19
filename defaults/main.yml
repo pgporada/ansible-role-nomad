@@ -16,6 +16,7 @@ nomad_port_serf: 4648
 
 nomad_private_ipaddress: "{{ ansible_default_ipv4.address }}"
 nomad_bind_addr: "0.0.0.0"
+nomad_client_addr: "{{ }}"
 
 nomad_is_server: false
 nomad_is_client: false

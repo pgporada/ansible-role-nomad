@@ -8,6 +8,18 @@
   tags:
     - nomad
 
+- name: Add NOMAD_ADDR to root .bashrc
+  become: true
+  become_method: sudo
+  lineinfile:
+    dest: "/root/.bashrc"
+    insertbefore: BOF
+    regexp: '^export NOMAD_ADDR'
+    line: 'export NOMAD_ADDR="http://{{ nomad_client_address }}:{{ nomad_port_rpc }}"'
+    create: yes
+  tags:
+    - nomad
+
 - name: Check for previously installed and executable nomad
   shell: "nomad version | awk '{print $2}' | awk -F'-' '{print $1}' | sed 's/v//'"
   changed_when: False

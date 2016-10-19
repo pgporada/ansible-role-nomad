@@ -6,17 +6,17 @@ datacenter = "{{ nomad_datacenter }}"
 name       = "{{ inventory_hostname_short }}"
 
 addresses {
-  rpc  = "172.17.5.53"
-  http = "172.17.5.53"
-  serf = "172.17.5.53"
+  rpc  = "{{ nomad_client_addr }}"
+  http = "{{ nomad_client_addr }}"
+  serf = "{{ nomad_client_addr }}"
 }
 
 advertise {
   # We need to specify our host's IP because we can't
   # advertise 0.0.0.0 to other nodes in our cluster.
-  http = "172.17.5.53:{{ nomad_port_http }}"
-  rpc  = "172.17.5.53:{{ nomad_port_rpc }}"
-  serf = "172.17.5.53:{{ nomad_port_serf }}"
+  http = "{{ nomad_client_addr }}:{{ nomad_port_http }}"
+  rpc  = "{{ nomad_client_addr }}:{{ nomad_port_rpc }}"
+  serf = "{{ nomad_client_addr }}:{{ nomad_port_serf }}"
 }
 
 server {
