@@ -6,7 +6,7 @@ After=network.target network-online.target
 
 [Service]
 Type=simple
-ExecStart={{ nomad_install_dir }}/nomad agent -config {{ nomad_data_dir }} {{ '-dev' if (nomad_devmode|lower) else '' }}
+ExecStart={{ nomad_install_dir }}/nomad agent -config {{ nomad_config_dir }} {{ '-dev' if (nomad_devmode|lower) else '' }}
 ExecReload=/bin/kill -HUP $MAINPID
 Restart=on-failure
 LimitNOFILE=65536
